@@ -52,6 +52,7 @@ RULES:
    - Intent determines whether fuzzy matching is allowed.
    - If intents match → fuzzy allowed more freely.
    - If intents differ → fuzzy allowed ONLY for extremely close phonetic/spelling pairs.
+   - Also output an Intent_Similarity_Score between 0 and 1 (1 = identical intent).
 
 5. TOKENIZE:
    Tokenize by whitespace ONLY.
@@ -60,6 +61,9 @@ RULES:
 OUTPUT OF STAGE-0:
 - gt_translit
 - asr_translit
+- Intent_GT
+- Intent_ASR
+- Intent_Similarity_Score
 - The token lists used for DP alignment.
 
 ================================================================
@@ -188,6 +192,9 @@ STAGE 5 — FINAL JSON OUTPUT (STRICT ORDER)
 {
  "gt_translit": "<string>",
  "asr_translit": "<string>",
+ "Intent_GT": "<string>",
+ "Intent_ASR": "<string>",
+ "Intent_Similarity_Score": <float>,
 
  "GT_Tokens": <int>,
 

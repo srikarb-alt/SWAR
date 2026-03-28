@@ -5,18 +5,27 @@ def client_view(llm):
 
     matched = exact + fuzzy
     pct = round((matched / gt_tokens) * 100, 2) if gt_tokens else 0.0
+    missing_words = llm.get("Del_Words", []) or []
+    missing_count = len(missing_words)
+    missing_pct = round((missing_count / gt_tokens) * 100, 2) if gt_tokens else 0.0
 
     return {
         "Filename": llm["Filename"],
         "GT_Translit": llm["gt_translit"],
         "ASR_Translit": llm["asr_translit"],
+        "Intent_GT": llm.get("Intent_GT", ""),
+        "Intent_ASR": llm.get("Intent_ASR", ""),
+        "Intent_Similarity_Score": llm.get("Intent_Similarity_Score", 0.0),
         "GT_Tokens": gt_tokens,
         "Exact_Words": ", ".join(llm.get("Exact_Words", [])),
         "Fuzzy_Words": ", ".join(llm.get("Fuzzy_Words", [])),
         "Exact_Count": exact,
         "Fuzzy_Count": fuzzy,
         "Matched_Count": matched,
-        "Matched_Ground_Truth(%)": pct
+        "Matched_Ground_Truth(%)": pct,
+        "Missing_Words": ", ".join(missing_words),
+        "Missing_Count": missing_count,
+        "Missing_Percentage": missing_pct,
     }
 
 
@@ -25,6 +34,9 @@ def internal_view(llm):
         "Filename": llm["Filename"],
         "GT_Translit": llm["gt_translit"],
         "ASR_Translit": llm["asr_translit"],
+        "Intent_GT": llm.get("Intent_GT", ""),
+        "Intent_ASR": llm.get("Intent_ASR", ""),
+        "Intent_Similarity_Score": llm.get("Intent_Similarity_Score", 0.0),
         "GT_Tokens": llm.get("GT_Tokens", 0),
         "Subs_Words": ", ".join(llm.get("Subs_Words", [])),
         "Dels_Words": ", ".join(llm.get("Del_Words", [])),
