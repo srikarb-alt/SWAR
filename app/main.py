@@ -75,6 +75,10 @@ def _build_client_json_row(item_id: str, llm: Dict[str, Any]) -> Dict[str, Any]:
     gt_tokens = _safe_int(llm.get("GT_Tokens", 0))
     exact_words = _ensure_list(llm.get("Exact_Words", []))
     fuzzy_words = _ensure_list(llm.get("Fuzzy_Words", []))
+    gt_names = _ensure_list(llm.get("GT_Names", []))
+    asr_names = _ensure_list(llm.get("ASR_Names", []))
+    gt_numbers = _ensure_list(llm.get("GT_Numbers", []))
+    asr_numbers = _ensure_list(llm.get("ASR_Numbers", []))
 
     exact_count = _safe_int(llm.get("Exact_Count", len(exact_words)))
     fuzzy_count = _safe_int(llm.get("Fuzzy_Count", len(fuzzy_words)))
@@ -86,6 +90,11 @@ def _build_client_json_row(item_id: str, llm: Dict[str, Any]) -> Dict[str, Any]:
     missing_count = len(missing_words)
     missing_percentage = round((missing_count / gt_tokens) * 100, 2) if gt_tokens else 0.0
 
+    gt_names_count = len(gt_names)
+    asr_names_count = len(asr_names)
+    gt_numbers_count = len(gt_numbers)
+    asr_numbers_count = len(asr_numbers)
+
     return {
         "id": item_id,
         "GT_Translit": llm.get("gt_translit", ""),
@@ -94,6 +103,14 @@ def _build_client_json_row(item_id: str, llm: Dict[str, Any]) -> Dict[str, Any]:
         "Intent_ASR": llm.get("Intent_ASR", ""),
         "Intent_Similarity_Score": llm.get("Intent_Similarity_Score", 0.0),
         "GT_Tokens": gt_tokens,
+        "GT_Names": gt_names,
+        "ASR_Names": asr_names,
+        "GT_Names_Count": gt_names_count,
+        "ASR_Names_Count": asr_names_count,
+        "GT_Numbers": gt_numbers,
+        "ASR_Numbers": asr_numbers,
+        "GT_Numbers_Count": gt_numbers_count,
+        "ASR_Numbers_Count": asr_numbers_count,
         "Exact_Words": exact_words,
         "Fuzzy_Words": fuzzy_words,
         "Exact_Count": exact_count,

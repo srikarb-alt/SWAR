@@ -9,6 +9,11 @@ def client_view(llm):
     missing_count = len(missing_words)
     missing_pct = round((missing_count / gt_tokens) * 100, 2) if gt_tokens else 0.0
 
+    gt_names = llm.get("GT_Names", []) or []
+    asr_names = llm.get("ASR_Names", []) or []
+    gt_numbers = llm.get("GT_Numbers", []) or []
+    asr_numbers = llm.get("ASR_Numbers", []) or []
+
     return {
         "Filename": llm["Filename"],
         "GT_Translit": llm["gt_translit"],
@@ -17,6 +22,14 @@ def client_view(llm):
         "Intent_ASR": llm.get("Intent_ASR", ""),
         "Intent_Similarity_Score": llm.get("Intent_Similarity_Score", 0.0),
         "GT_Tokens": gt_tokens,
+        "GT_Names": ", ".join(gt_names),
+        "ASR_Names": ", ".join(asr_names),
+        "GT_Names_Count": len(gt_names),
+        "ASR_Names_Count": len(asr_names),
+        "GT_Numbers": ", ".join(gt_numbers),
+        "ASR_Numbers": ", ".join(asr_numbers),
+        "GT_Numbers_Count": len(gt_numbers),
+        "ASR_Numbers_Count": len(asr_numbers),
         "Exact_Words": ", ".join(llm.get("Exact_Words", [])),
         "Fuzzy_Words": ", ".join(llm.get("Fuzzy_Words", [])),
         "Exact_Count": exact,
@@ -30,6 +43,11 @@ def client_view(llm):
 
 
 def internal_view(llm):
+    gt_names = llm.get("GT_Names", []) or []
+    asr_names = llm.get("ASR_Names", []) or []
+    gt_numbers = llm.get("GT_Numbers", []) or []
+    asr_numbers = llm.get("ASR_Numbers", []) or []
+
     return {
         "Filename": llm["Filename"],
         "GT_Translit": llm["gt_translit"],
@@ -38,6 +56,14 @@ def internal_view(llm):
         "Intent_ASR": llm.get("Intent_ASR", ""),
         "Intent_Similarity_Score": llm.get("Intent_Similarity_Score", 0.0),
         "GT_Tokens": llm.get("GT_Tokens", 0),
+        "GT_Names": ", ".join(gt_names),
+        "ASR_Names": ", ".join(asr_names),
+        "GT_Names_Count": len(gt_names),
+        "ASR_Names_Count": len(asr_names),
+        "GT_Numbers": ", ".join(gt_numbers),
+        "ASR_Numbers": ", ".join(asr_numbers),
+        "GT_Numbers_Count": len(gt_numbers),
+        "ASR_Numbers_Count": len(asr_numbers),
         "Subs_Words": ", ".join(llm.get("Subs_Words", [])),
         "Dels_Words": ", ".join(llm.get("Del_Words", [])),
         "Ins_Words": ", ".join(llm.get("Ins_Words", [])),

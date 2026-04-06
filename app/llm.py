@@ -37,7 +37,16 @@ def _is_retryable_status(status_code):
 def _has_minimum_fields(parsed):
     if not isinstance(parsed, dict):
         return False
-    return all(key in parsed for key in ("gt_translit", "asr_translit", "GT_Tokens"))
+    required = (
+        "gt_translit",
+        "asr_translit",
+        "GT_Tokens",
+        "GT_Names",
+        "ASR_Names",
+        "GT_Numbers",
+        "ASR_Numbers",
+    )
+    return all(key in parsed for key in required)
 
 
 def call_gemini_with_details(
