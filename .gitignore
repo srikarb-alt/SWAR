@@ -3,7 +3,7 @@
 .env.*
 # Python virtual environments
 venv/
-venv_wer/
+venv_swar/
 env/
 .venv/
 # Python cache files

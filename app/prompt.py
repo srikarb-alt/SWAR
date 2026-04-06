@@ -6,6 +6,7 @@ NO explanation, NO reasoning text, NO additional fields.
 Processing MUST follow the pipeline IN STRICT ORDER:
 
 Stage 0: Transliterate → Normalize → Numeric Normalize → Intent Extraction → Tokenize
+Stage 0.5: Entity Extraction (Names + Numbers) - FROM THE SENTENCES
 Stage 1: Strict DP Alignment
 Stage 2: Post-Alignment Checks
 Stage 3: Classification
@@ -52,6 +53,7 @@ RULES:
    - Intent determines whether fuzzy matching is allowed.
    - If intents match → fuzzy allowed more freely.
    - If intents differ → fuzzy allowed ONLY for extremely close phonetic/spelling pairs.
+   - Also output an Intent_Similarity_Score between 0 and 1 (1 = identical intent).
 
 5. TOKENIZE:
    Tokenize by whitespace ONLY.
@@ -60,7 +62,34 @@ RULES:
 OUTPUT OF STAGE-0:
 - gt_translit
 - asr_translit
+- Intent_GT
+- Intent_ASR
+- Intent_Similarity_Score
 - The token lists used for DP alignment.
+
+================================================================
+STAGE 0.5 - ENTITY EXTRACTION (NAMES + NUMBERS)
+================================================================
+Extract entities independently from GT and ASR sentences (NOT based on alignment).
+
+1. NAMES:
+   - Extract any token or short phrase that represents a name/entity:
+     person, company, organization, brand, product, place, or other proper entity.
+   - If a name spans multiple tokens, output it as a single space-joined phrase.
+   - Output in normalized (lowercase) form, matching gt_translit/asr_translit tokens.
+   - Do NOT include generic nouns (e.g., "bank" unless used as a proper name).
+
+2. NUMBERS:
+   - Extract all numeric expressions: dates, times, amounts, phone/account numbers, IDs, etc.
+   - Use the numeric normalization output where applicable (e.g., "teen hazaar" -> "3000").
+   - Include any token containing digits OR numeric tokens produced by normalization.
+   - Output as they appear in normalized tokens (lowercase, punctuation removed).
+
+Output fields:
+- GT_Names: [ ... ]
+- ASR_Names: [ ... ]
+- GT_Numbers: [ ... ]
+- ASR_Numbers: [ ... ]
 
 ================================================================
 STAGE 1 — STRICT LEVENSHTEIN DP ALIGNMENT (NO SMARTNESS)
@@ -188,8 +217,16 @@ STAGE 5 — FINAL JSON OUTPUT (STRICT ORDER)
 {
  "gt_translit": "<string>",
  "asr_translit": "<string>",
+ "Intent_GT": "<string>",
+ "Intent_ASR": "<string>",
+ "Intent_Similarity_Score": <float>,
 
  "GT_Tokens": <int>,
+
+ "GT_Names": ["name", ...],
+ "ASR_Names": ["name", ...],
+ "GT_Numbers": ["123", ...],
+ "ASR_Numbers": ["123", ...],
 
  "Alignment": ["gt|asr", ...],
  "Exact_Words": ["word", ...],
